@@ -71,7 +71,7 @@ func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGrou
 
 func main() {
 	// read file and process it
-	data, err := ioutil.ReadFile("test.data")
+	data, err := ioutil.ReadFile("test1.data")
 
 	if err != nil {
 		fmt.Println("DID NOT WORK TRY AGAIN")
