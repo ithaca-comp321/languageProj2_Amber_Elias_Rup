@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"regexp"
 	"strings"
 	"sync"
@@ -32,18 +33,11 @@ func phoneNumbersInFile(filePath string) int {
 	// read the file and point jobs to all the text we read in
 	go func() {
 		scanner := bufio.NewScanner(file)
-		// scanner.Split(bufio.ScanLines)
-		// var textlines int
 		for scanner.Scan() {
-			// 	textlines = apped(textlines, scanner.Text())
 			jobs <- scanner.Text()
 		}
 		//close all jobs
 		close(jobs)
-
-		// for _, eachline:= len textlines {
-		// 	fmt.Println(eachline)
-		// }
 
 	}() //syntax
 
@@ -64,7 +58,7 @@ func phoneNumbersInFile(filePath string) int {
 }
 
 func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGroup, telephone *regexp.Regexp) {
-	// Decrease counter for wait-group when go routine finishes
+	// Decrease counter for wg when go routine finishes
 	defer wg.Done()
 	for j := range jobs {
 		if telephone.MatchString(j) {
@@ -74,8 +68,14 @@ func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGrou
 }
 
 func main() {
-	// Just passing numbers in for now but need it to process from file
-	var testNums = "(555) 123-3456\nfdjkdg\n(555) 123-3456\n(555) 123-3456\nbadba\nhelpfixthis"
-	numberOfTelephoneNumbers := phoneNumbersInFile(testNums)
+	// read file and process it
+	data, err := ioutil.ReadFile("test.data")
+
+	if err != nil {
+		fmt.Println("DID NOT WORK TRY AGAIN")
+	}
+
+	numberOfTelephoneNumbers := phoneNumbersInFile(string(data))
 	fmt.Println(numberOfTelephoneNumbers)
+
 }
