@@ -39,6 +39,8 @@ func phoneNumbersInFile(filePath string) int {
 		//close all jobs
 		close(jobs)
 
+		
+
 	}() //syntax
 
 	// Collect all results BUT MAKE SURE WE CLOSE CHANNEL WHEN PROCESSED
