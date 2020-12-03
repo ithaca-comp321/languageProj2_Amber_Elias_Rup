@@ -8,8 +8,8 @@ import (
 	"sync"
 )
 
-func phoneNumbersInFile(path string) int {
-	file := strings.NewReader(path)
+func phoneNumbersInFile(filePath string) int {
+	file := strings.NewReader(filePath)
 
 	//just googled how to regex and make sure phone number works
 	var telephone = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
@@ -17,25 +17,31 @@ func phoneNumbersInFile(path string) int {
 	// make buffered channels then wait
 	jobs := make(chan string)
 	results := make(chan int)
+
+	//wait group is used to wait for all goroutines to finish
 	wg := new(sync.WaitGroup)
 
 	// start up some workers and run
-	for w := 1; w <= 5; w++ {
+	for worker := 1; worker <= 5; worker++ {
+		//add worker to group
 		wg.Add(1)
+		//call match phonenumbers to make sure the telephone numbers are valid
 		go matchPhoneNumbers(jobs, results, wg, telephone)
 	}
 
-	// Go over a file line by line and queue up a ton of work
+	// read the file and point jobs to all the text we read in
 	go func() {
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			jobs <- scanner.Text()
 		}
+		//close all jobs
 		close(jobs)
-	}()
+	}() //syntax
 
 	// Collect all results BUT MAKE SURE WE CLOSE CHANNEL WHEN PROCESSED
 	go func() {
+		//suspends execution of all
 		wg.Wait()
 		close(results)
 	}()
@@ -61,7 +67,7 @@ func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGrou
 
 func main() {
 	// Just passing numbers in for now but need it to process from file
-	const input = "(555) 123-3456\n(555) 123-3456\n(555) 123-3456"
-	numberOfTelephoneNumbers := phoneNumbersInFile(input)
+	var testNums = "(555) 123-3456\nfdjkdg\n(555) 123-3456\n(555) 123-3456\nbadba\nhelpfixthis"
+	numberOfTelephoneNumbers := phoneNumbersInFile(testNums)
 	fmt.Println(numberOfTelephoneNumbers)
 }
