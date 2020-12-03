@@ -41,7 +41,7 @@ func phoneNumbersInFile(filePath string) int {
 		//close all jobs
 		close(jobs)
 
-		for _, eachline := range textlines {
+		for _, eachline := len textlines {
 			fmt.Println(eachline)
 		}
 
