@@ -17,8 +17,15 @@ func TestReadFile(t *testing.T) {
 		t.Fatal("Could not open file")
 	}
 
-	if string(data) != "(945) 422-9345\n(945) 422-9345" {
+	if string(data) != "(945)422-9345\n(945)422-9345\nfejkfe\n(945)422-9345" {
 		t.Fatal("Strings contents dont match")
+	}
+
+	//Checking phoneNumbers in file
+	var nums = phoneNumbersInFile(string(data))
+
+	if nums != 3 {
+		t.Fatal("Count is wrong")
 	}
 
 }

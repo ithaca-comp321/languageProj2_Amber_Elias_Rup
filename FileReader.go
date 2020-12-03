@@ -32,18 +32,18 @@ func phoneNumbersInFile(filePath string) int {
 	// read the file and point jobs to all the text we read in
 	go func() {
 		scanner := bufio.NewScanner(file)
-		scanner.Split(bufio.ScanLines)
-		var textlines int
+		// scanner.Split(bufio.ScanLines)
+		// var textlines int
 		for scanner.Scan() {
-			textlines = apped(textlines, scanner.Text())
+			// 	textlines = apped(textlines, scanner.Text())
 			jobs <- scanner.Text()
 		}
 		//close all jobs
 		close(jobs)
 
-		for _, eachline := len textlines {
-			fmt.Println(eachline)
-		}
+		// for _, eachline:= len textlines {
+		// 	fmt.Println(eachline)
+		// }
 
 	}() //syntax
 
