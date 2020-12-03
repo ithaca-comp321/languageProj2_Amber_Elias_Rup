@@ -35,16 +35,16 @@ func phoneNumbersInFile(filePath string) int {
 		scanner.Split(bufio.ScanLines)
 		var textlines int
 		for scanner.Scan() {
-			textlines = apped(txtlines, scanner.Text())
+			textlines = apped(textlines, scanner.Text())
 			jobs <- scanner.Text()
 		}
 		//close all jobs
 		close(jobs)
 
-		for _, eachline := range txtlines {
+		for _, eachline := range textlines {
 			fmt.Println(eachline)
 		}
-		
+
 	}() //syntax
 
 	// Collect all results BUT MAKE SURE WE CLOSE CHANNEL WHEN PROCESSED
