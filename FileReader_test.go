@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
+	"time"
 )
 
 func assertEqual(t *testing.T, a interface{}, b interface{}) {
@@ -12,7 +14,10 @@ func assertEqual(t *testing.T, a interface{}, b interface{}) {
 }
 
 func TestReadFile(t *testing.T) {
+	start := time.Now()
 	data, err := ioutil.ReadFile("test1.data")
+	duration := time.Since(start)
+	fmt.Println("Time to read file:", duration)
 	if err != nil {
 		t.Fatal("Could not open file")
 	}
@@ -22,8 +27,12 @@ func TestReadFile(t *testing.T) {
 	}
 
 }
-func TestCountFromFile(t *testing.T){
+
+func TestCountFromFile(t *testing.T) {
+	start := time.Now()
 	data, err := ioutil.ReadFile("test1.data")
+	duration := time.Since(start)
+	fmt.Println("Time to read file:", duration)
 	//Checking phoneNumbers in file
 	var nums = phoneNumbersInFile(string(data))
 	if err != nil {
@@ -32,5 +41,5 @@ func TestCountFromFile(t *testing.T){
 	if nums != 3 {
 		t.Fatal("Count is wrong")
 	}
-	
+
 }
