@@ -38,9 +38,6 @@ func phoneNumbersInFile(filePath string) int {
 		}
 		//close all jobs
 		close(jobs)
-
-		
-
 	}() //syntax
 
 	// Collect all results BUT MAKE SURE WE CLOSE CHANNEL WHEN PROCESSED
@@ -59,6 +56,7 @@ func phoneNumbersInFile(filePath string) int {
 	return counts
 }
 
+//helper func
 func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGroup, telephone *regexp.Regexp) {
 	// Decrease counter for wg when go routine finishes
 	defer wg.Done()
@@ -69,6 +67,22 @@ func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGrou
 	}
 }
 
+func sequentialPhoneNumbersInFile(filePath string) int {
+	file := strings.NewReader(filePath)
+
+	//regex is the most unreadable thing in existence, wow
+	var telephone = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
+	result := 0
+	scanner := bufio.NewScanner(file)
+	//Go through all the lines in the file
+	for scanner.Scan() {
+		if telephone.MatchString(scanner.Text()) {
+			result++
+		}
+	}
+	return result
+}
+
 func main() {
 	// read file and process it
 	data, err := ioutil.ReadFile("test1.data")
@@ -76,8 +90,10 @@ func main() {
 	if err != nil {
 		fmt.Println("DID NOT WORK TRY AGAIN")
 	}
-
 	numberOfTelephoneNumbers := phoneNumbersInFile(string(data))
-	fmt.Println(numberOfTelephoneNumbers)
+	fmt.Println("Done parallel:", numberOfTelephoneNumbers)
+
+	numberOfTelephoneNumbers = sequentialPhoneNumbersInFile(string(data))
+	fmt.Println("Done sequential:", numberOfTelephoneNumbers)
 
 }
