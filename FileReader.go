@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 )
 
 func phoneNumbersInFile(filePath string) int {
@@ -23,7 +24,7 @@ func phoneNumbersInFile(filePath string) int {
 	wg := new(sync.WaitGroup)
 
 	// start up some workers and run
-	for worker := 1; worker <= 5; worker++ {
+	for worker := 1; worker <= 1000; worker++ {
 		//add worker to group
 		wg.Add(1)
 		//call match phonenumbers to make sure the telephone numbers are valid
@@ -85,15 +86,21 @@ func sequentialPhoneNumbersInFile(filePath string) int {
 
 func main() {
 	// read file and process it
-	data, err := ioutil.ReadFile("test1.data")
+	data, err := ioutil.ReadFile("600000numbers.data")
 
 	if err != nil {
 		fmt.Println("DID NOT WORK TRY AGAIN")
 	}
+	var start = time.Now()
 	numberOfTelephoneNumbers := phoneNumbersInFile(string(data))
+	duration := time.Since(start)
 	fmt.Println("Done parallel:", numberOfTelephoneNumbers)
+	fmt.Println("Time to read file:", duration)
 
+	var start2 = time.Now()
 	numberOfTelephoneNumbers = sequentialPhoneNumbersInFile(string(data))
+	duration2 := time.Since(start2)
 	fmt.Println("Done sequential:", numberOfTelephoneNumbers)
+	fmt.Println("Time to read file:", duration2)
 
 }
