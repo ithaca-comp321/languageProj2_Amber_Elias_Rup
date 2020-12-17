@@ -71,7 +71,7 @@ func phoneNumbersInFile(filePath string, filePath2 string) int {
 }
 
 //helper func
-func matchPhoneNumbers(jobs <-chan string, jobs2 <- chan string, results chan<- int, wg *sync.WaitGroup, telephone *regexp.Regexp) {
+func matchPhoneNumbers(jobs <-chan string, jobs2 <-chan string, results chan<- int, wg *sync.WaitGroup, telephone *regexp.Regexp) {
 	// Decrease counter for wg when go routine finishes
 	defer wg.Done()
 	for j := range jobs {
