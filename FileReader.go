@@ -10,16 +10,17 @@ import (
 	"time"
 )
 
-func phoneNumbersInFile(filePath string, filePath2 string) int {
-	file := strings.NewReader(filePath)
-	file2 := strings.NewReader(filePath2)
+func phoneNumbersInFile(filePaths []string) int {
+
+	//file := strings.NewReader(filePath)
+	//file2 := strings.NewReader(filePath2)
 
 	//just googled how to regex and make sure phone number works
 	var telephone = regexp.MustCompile(`^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$`)
 
 	// make buffered channels then wait
 	jobs := make(chan string)
-	jobs2 := make(chan string)
+	//jobs2 := make(chan string)
 
 	results := make(chan int)
 
@@ -31,27 +32,20 @@ func phoneNumbersInFile(filePath string, filePath2 string) int {
 		//add worker to group
 		wg.Add(1)
 		//call match phonenumbers to make sure the telephone numbers are valid
-		go matchPhoneNumbers(jobs, jobs2, results, wg, telephone)
+		go matchPhoneNumbers(jobs, results, wg, telephone)
 
 	}
 
-	// read the file and point jobs to all the text we read in
+	// read the files and point jobs to all the text we read in
 	go func() {
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			jobs <- scanner.Text()
+		for i := 0; i < len(filePaths); i++ {
+			scanner := bufio.NewScanner(strings.NewReader(filePaths[i]))
+			for scanner.Scan() {
+				jobs <- scanner.Text()
+			}
 		}
 		//close all jobs
 		close(jobs)
-	}() //syntax
-
-	go func() {
-		scanner := bufio.NewScanner(file2)
-		for scanner.Scan() {
-			jobs2 <- scanner.Text()
-		}
-		//close all jobs
-		close(jobs2)
 	}() //syntax
 
 	// Collect all results BUT MAKE SURE WE CLOSE CHANNEL WHEN PROCESSED
@@ -71,7 +65,7 @@ func phoneNumbersInFile(filePath string, filePath2 string) int {
 }
 
 //helper func
-func matchPhoneNumbers(jobs <-chan string, jobs2 <-chan string, results chan<- int, wg *sync.WaitGroup, telephone *regexp.Regexp) {
+func matchPhoneNumbers(jobs <-chan string, results chan<- int, wg *sync.WaitGroup, telephone *regexp.Regexp) {
 	// Decrease counter for wg when go routine finishes
 	defer wg.Done()
 	for j := range jobs {
@@ -79,11 +73,11 @@ func matchPhoneNumbers(jobs <-chan string, jobs2 <-chan string, results chan<- i
 			results <- 1
 		}
 	}
-	for i := range jobs2 {
-		if telephone.MatchString(i) {
-			results <- 1
-		}
-	}
+	//for i := range jobs2 {
+	//	if telephone.MatchString(i) {
+	//		results <- 1
+	//	}
+	//}
 }
 
 func sequentialPhoneNumbersInFile(filePath string) int {
@@ -111,9 +105,10 @@ func main() {
 		fmt.Println("DID NOT WORK TRY AGAIN")
 	}
 	var start = time.Now()
-	numberOfTelephoneNumbers := phoneNumbersInFile(string(data), string(data2))
+	filepaths := []string{string(data), string(data2)}
+	numberOfTelephoneNumbers := phoneNumbersInFile(filepaths)
 	duration := time.Since(start)
-	fmt.Println("Done parallel:", numberOfTelephoneNumbers)
+	fmt.Println("Done concurrent:", numberOfTelephoneNumbers)
 	fmt.Println("Time to read file:", duration)
 
 	var start2 = time.Now()

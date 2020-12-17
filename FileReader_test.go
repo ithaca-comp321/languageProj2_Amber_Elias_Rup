@@ -38,14 +38,15 @@ func TestCountFromFile(t *testing.T) {
 
 	//Checking phoneNumbers in file
 	start = time.Now()
-	var nums = phoneNumbersInFile(string(data), string(data2))
+	filepaths := []string{string(data), string(data2)}
+	var nums = phoneNumbersInFile(filepaths)
 	duration = time.Since(start)
 	fmt.Println("Time to process file with goroutines:", duration)
 	if err != nil || err2 != nil {
 		t.Fatal("Could not open file")
 	}
 	if nums != 6 {
-		t.Fatal("Parallel count is wrong, got: ", nums)
+		t.Fatal("Concurrent count is wrong, got: ", nums)
 	}
 
 	//Sequential test
@@ -53,8 +54,6 @@ func TestCountFromFile(t *testing.T) {
 	nums = sequentialPhoneNumbersInFile(string(data))
 	nums2 := sequentialPhoneNumbersInFile(string(data2))
 	total := nums + nums2
-
-
 
 	duration = time.Since(start)
 	fmt.Println("Time to process file sequentially:", duration)
@@ -73,14 +72,15 @@ func TestCountFromFile(t *testing.T) {
 
 	//Checking phoneNumbers in file
 	start = time.Now()
-	nums = phoneNumbersInFile(string(data), string(data2))
+	filepaths = []string{string(data), string(data2)}
+	nums = phoneNumbersInFile(filepaths)
 	duration = time.Since(start)
-	fmt.Println("Time to process large file with goroutines:", duration)
+	fmt.Println("Time to process large file concurrently:", duration)
 	if err != nil {
 		t.Fatal("Could not open large file")
 	}
 	if nums != 1200000 {
-		t.Fatal("Parallel count is wrong, got: ", nums)
+		t.Fatal("Concurrent count is wrong, got: ", nums)
 	}
 
 	//Sequential test
