@@ -67,6 +67,7 @@ For large projects where this may be an issue, Go apparently has a faster compil
 Resources: 
 
 http://www.golangbootcamp.com/book/concurrency
+https://gobyexample.com/
 
 
 Examples on how to use Maps, Closures, Timers:  https://gobyexample.com 
