@@ -15,7 +15,7 @@ func assertEqual(t *testing.T, a interface{}, b interface{}) {
 
 func TestReadFile(t *testing.T) {
 	start := time.Now()
-	data, err := ioutil.ReadFile("test1.data")
+	data, err := ioutil.ReadFile("testReadingFiles.data")
 	duration := time.Since(start)
 	fmt.Println("Time to read file:", duration)
 	if err != nil {
@@ -30,8 +30,8 @@ func TestReadFile(t *testing.T) {
 
 func TestCountFromFile(t *testing.T) {
 	start := time.Now()
-	data, err := ioutil.ReadFile("test1.data")
-	data2, err2 := ioutil.ReadFile("test1.data")
+	data, err := ioutil.ReadFile("testReadingFiles.data")
+	data2, err2 := ioutil.ReadFile("testReadingFiles.data")
 
 	duration := time.Since(start)
 	fmt.Println("Time to read file:", duration)
@@ -93,5 +93,9 @@ func TestCountFromFile(t *testing.T) {
 	if total != 1200000 {
 		t.Fatal("Sequential count is wrong, got:", total)
 	}
+}
 
+func TestSequential(t *testing.T) {
+ 
+	
 }
