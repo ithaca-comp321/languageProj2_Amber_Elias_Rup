@@ -95,7 +95,3 @@ func TestCountFromFile(t *testing.T) {
 	}
 }
 
-func TestSequential(t *testing.T) {
- 
-	
-}
