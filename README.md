@@ -60,7 +60,7 @@ Errors can be difficult to figure out from console error output alone (when it c
 
 Cost: Golang is faster than Java, Python, PHP and many other languages. Go is garbage collected and also has support for pointers.
 
-For large projects where this may be an issue, Go apparently has a faster compiling time than C++ and other popular languages.
+For large projects where this may be an issue, Go apparently has a faster compiling time than C++ and other popular languages. "Go doesn't rely on a virtual machine to compile its code. It gets compiled directly into a binary file."
 
 
 
